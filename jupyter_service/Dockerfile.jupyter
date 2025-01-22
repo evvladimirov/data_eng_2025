@@ -1,0 +1,27 @@
+# Use the official Jupyter Notebook image as the base image
+FROM quay.io/jupyter/base-notebook:lab-4.3.4
+
+# Prevents Python from writing pyc files to disc (equivalent to python -B option)
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr (equivalent to python -u option)
+ENV PYTHONUNBUFFERED=1
+
+USER root
+# Install packages you need:
+RUN apt-get update && apt-get install -y curl unzip
+
+# Install rclone
+RUN curl https://rclone.org/install.sh | bash
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER $NB_UID
+
+# Copy your Jupyter Notebook requirements file and common into the Docker image
+COPY requirements.txt .
+RUN pip install uv==0.5.11 && \
+    uv pip install --system --no-cache -r requirements.txt && \
+    rm requirements.txt
+
+# Set the working directory
+WORKDIR /srv
