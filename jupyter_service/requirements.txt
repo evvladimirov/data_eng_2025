@@ -1,2 +1,7 @@
 # common ones
 polars-u64-idx==1.19.0
+psycopg2-binary
+sqlalchemy
+pyarrow
+pandas
+adbc_driver_postgresql
